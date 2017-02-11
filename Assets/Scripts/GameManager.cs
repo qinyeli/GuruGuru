@@ -6,28 +6,42 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour {
 
 	public static int currLevel = -1;
-	public static int totalLevel = 3;
+	public static int totalLevel = 4;
 
 	void Awake() {
 		DontDestroyOnLoad(transform.gameObject);
 		SceneManager.sceneLoaded += SceneLoaded;
-
-		NextLevel ();
 	}
 
-	static void SceneLoaded(Scene scene, LoadSceneMode loadSceneMode) {
+	void SceneLoaded(Scene scene, LoadSceneMode loadSceneMode) {
 
 		if (scene.name == "Scene_0") {
 			print (scene.name + " " + "Level " + currLevel + " loaded...");
-
 			LevelParser.Load (currLevel);
-		} else {
+		} 
+
+		if (scene.name == "SceneLevelSelection") {
 			print (scene.name + " loaded...");
 		}
 	}
-		
-	public void NextLevel () {
-		currLevel = (currLevel + 1) % 3;
+
+	void Update() {
+		if (Input.GetKey (KeyCode.F1)) {
+			NextLevel ();
+		}
+	}
+
+	static public void LoadLevel(int level) {
+		currLevel = level;
 		SceneManager.LoadScene ("Scene_0");
+	}
+		
+	static public void NextLevel () {
+		currLevel = (currLevel + 1) % totalLevel;
+		SceneManager.LoadScene ("Scene_0");
+	}
+
+	static public void Reload() {
+		LevelParser.ResetHero ();
 	}
 }

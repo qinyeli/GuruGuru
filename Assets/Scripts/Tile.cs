@@ -9,9 +9,8 @@ public class Tile : MonoBehaviour {
 	static GameObject ground;
 	BoxCollider bc;
 	SpriteRenderer sprend;
-	GameManager gameManager;
 
-	char type;
+	public char type;
 
 	void Awake() {
 		if (sprites == null) {
@@ -24,8 +23,6 @@ public class Tile : MonoBehaviour {
 
 		bc = GetComponent<BoxCollider>();
 		sprend = GetComponent<SpriteRenderer>();
-
-		gameManager = GameObject.Find ("GameManager").GetComponent<GameManager> ();
 	}
 
 	void Start() {
@@ -36,7 +33,7 @@ public class Tile : MonoBehaviour {
 		gameObject.transform.parent = ground.transform;
 	}
 
-	public void Initialize(char c, float x, float y) {
+	public void Initialize(char c, char o, float x, float y) {
 		if (!sprites.ContainsKey (c)) {
 			print ("Error: undefined block: " + c);
 			return;
@@ -56,7 +53,7 @@ public class Tile : MonoBehaviour {
 			bc.isTrigger = enabled;
 			break;
 		case 'w':
-			bc.center = new Vector3 (1f, 0.05f, 0f);
+			bc.center = new Vector3 (0f, 0.05f, 0f);
 			bc.size = new Vector3 (1f, 0.1f, 0f);
 			bc.isTrigger = enabled;
 			break;
@@ -65,14 +62,28 @@ public class Tile : MonoBehaviour {
 		}
 
 		type = c;
+
+		switch (o) {
+		case '1':
+			gameObject.transform.Rotate (new Vector3 (0, 0, 270));
+			break;
+		case '2':
+			gameObject.transform.Rotate (new Vector3 (0, 0, 180));
+			break;
+		case '3':
+			gameObject.transform.Rotate (new Vector3 (0, 0, 90));
+			break;
+		default:
+			break;
+		}
 	}
 
 	void OnTriggerEnter(Collider other) {
 		if (other.name == "Hero") {
 			if (type == 'd') {
-				gameManager.NextLevel ();
+				GameManager.NextLevel ();
 			} else if (type == 'w') {
-				print ("Hero is hurt!");
+				GameManager.Reload ();
 			}
 		}
 	}

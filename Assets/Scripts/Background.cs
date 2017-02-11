@@ -8,7 +8,7 @@ public class Background : MonoBehaviour {
 	static 	Sprite sprite;
 	static GameObject ground;
 
-	public void Initialize(float w, float h) {
+	public void Initialize(float h, float w) {
 		if (sprite == null) {
 			sprite = Resources.Load<Sprite> ("Sprites/Gray");
 		}

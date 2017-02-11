@@ -11,6 +11,9 @@ public class LevelParser : MonoBehaviour {
 	static GameObject backgroundPrefab;
 	//static Sprite graySprite;
 
+	static GameObject hero;
+	static          Vector3 startPosition;
+
 	void Awake() {
 		DontDestroyOnLoad(transform.gameObject);
 		tilePrefab = Resources.Load<GameObject> ("Prefabs/Tile");
@@ -26,29 +29,43 @@ public class LevelParser : MonoBehaviour {
 		int w = lines[0].Split(',').Length;
 
 		// Parse the map file and generate tiles, the background and the hero
-		Tile[,] tiles = new Tile[w,h];
-		for (int i = 0; i < w; i++) {
+		Tile[,] tiles = new Tile[h,w];
+		for (int i = 0; i < h; i++) {
 			string[] temp = lines [i].Split (',');
 
-			for (int j = 0; j < h; j++) {
-				//char c = char.Parse (temp [j]);
-				char type = temp [j] [0]; // c defines the tile type
+			for (int j = 0; j < w; j++) {
+
+				char type = temp [j] [0];
+				char orientation = '0';
+
+				if (temp[j].Length > 1) {
+					orientation = temp [j] [1];
+				}
+
 
 				/*
 				 * s: source
 				 * d: destination
 				 * x: black box
 				 * o: no box
+				 * 
+				 * 
+				 * 0: rotate 0 degrees
+				 * 1: rotate 90 degrees
+				 * 2: rotate 180 degrees
+				 * 3: rotate 270 degress
 				 */
 
 				if (type == 's') {
-					GameObject hero = Instantiate (heroPrefab);
+					hero = Instantiate (heroPrefab);
 					hero.name = "Hero";
-					hero.transform.position = new Vector3 (j, - i, 0);
+					startPosition = new Vector3 (j, - i, 0);
+					hero.transform.position = startPosition;
+
 				} else if (type != 'o') {
 					GameObject go = Instantiate (tilePrefab);
 					Tile t = go.GetComponent<Tile> ();
-					t.Initialize (type, j, - i);
+					t.Initialize (type, orientation, j, - i);
 					tiles [i, j] = t;
 				}
 			}
@@ -57,5 +74,10 @@ public class LevelParser : MonoBehaviour {
 		GameObject gobg = Instantiate(backgroundPrefab);
 		Background b = gobg.GetComponent<Background> ();
 		b.Initialize(h, w);
+	}
+
+	// Put Hero to the start position
+	static public void ResetHero() {
+		hero.transform.position = startPosition;
 	}
 }
