@@ -13,10 +13,12 @@ public class Hero : MonoBehaviour {
 	float acceleration = 10f;
 	float deceleration = 10f;
 
+	float deathHeight = 6f;
+
 	Rigidbody rigid;
 	SphereCollider coll;
 	Ground ground;
-	HeroAnimation heroAnimation;
+	HeroAnimation anim;
 
 	public float startJumpHeight;
 	public bool grounded;
@@ -28,7 +30,7 @@ public class Hero : MonoBehaviour {
 		rigid = GetComponent<Rigidbody> ();
 		coll = GetComponent<SphereCollider> ();
 		ground = GameObject.Find ("Ground").GetComponent<Ground> ();
-		heroAnimation = GetComponent<HeroAnimation> ();
+		anim = GetComponent<HeroAnimation> ();
 
 		// Set the initail value of startJumpHeight to avoid the ground from rotating at start
 		startJumpHeight = transform.position.y;
@@ -37,14 +39,6 @@ public class Hero : MonoBehaviour {
 
 	void Update() {
 		grounded = isGrounded ();
-
-		if (grounded) {
-			if (startJumpHeight - transform.position.y > 6) {
-				Die ();
-			}
-			startJumpHeight = transform.position.y;
-		}
-
 	}
 
 	void FixedUpdate () {
@@ -59,7 +53,17 @@ public class Hero : MonoBehaviour {
 	}
 
 	bool isGrounded() {
-		return (Physics.Raycast (transform.position, Vector3.down, coll.radius * 1.2f));
+		bool result = (Physics.Raycast (transform.position, Vector3.down, coll.radius * 1.2f));
+		if (result) {
+			if (startJumpHeight - transform.position.y > deathHeight) {
+				Die ();
+			} else if (!grounded && !ground.IsRotating()) {
+				anim.SplashSparkle ();
+			}
+			startJumpHeight = transform.position.y;
+		}
+
+		return result;
 	}
 
 	void HandleInput() {
@@ -149,7 +153,7 @@ public class Hero : MonoBehaviour {
 
 	public void Die() {
 		rigid.isKinematic = true;
-		heroAnimation.SplashBlood ();
+		anim.SplashBlood ();
 		StartCoroutine ("WaitAndDie", 1f);
 	}
 
@@ -161,8 +165,10 @@ public class Hero : MonoBehaviour {
 	void OnCollisionEnter(Collision coll) {
 		if (!grounded && isDashing && coll.transform.root.name == "Ground") {
 			if (coll.transform.position.x - transform.position.x < 0) {
+				anim.SplashRainbow ();
 				ground.Rotate (90);
 			} else {
+				anim.SplashRainbow ();
 				ground.Rotate (-90);
 			}
 		}

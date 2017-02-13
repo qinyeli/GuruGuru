@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour {
 
 	public static int currLevel = -1;
 	public static int totalLevel = 4;
+//	public static System.Random random = new System.Random ();
 
 	void Awake() {
 		DontDestroyOnLoad(transform.gameObject);
