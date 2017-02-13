@@ -53,8 +53,8 @@ public class Tile : MonoBehaviour {
 			bc.isTrigger = enabled;
 			break;
 		case 'w':
-			bc.center = new Vector3 (0f, 0.05f, 0f);
-			bc.size = new Vector3 (1f, 0.1f, 0f);
+			bc.center = new Vector3 (0f, -0.4f, 0f);
+			bc.size = new Vector3 (1f, 0.2f, 0f);
 			bc.isTrigger = enabled;
 			break;
 		default:
@@ -87,7 +87,8 @@ public class Tile : MonoBehaviour {
 
 			// If Hero hits the spikes
 			else if (type == 'w') {
-				GameManager.Reload ();
+				Hero hero = other.gameObject.GetComponent<Hero>();
+				hero.Die ();
 			}
 		}
 	}

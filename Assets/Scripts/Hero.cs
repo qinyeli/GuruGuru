@@ -147,10 +147,10 @@ public class Hero : MonoBehaviour {
 		rigid.velocity = vel;
 	}
 
-	void Die() {
+	public void Die() {
 		rigid.isKinematic = true;
 		heroAnimation.SplashBlood ();
-		StartCoroutine ("WaitAndDie", 3f);
+		StartCoroutine ("WaitAndDie", 1f);
 	}
 
 	IEnumerator WaitAndDie(float t) {
