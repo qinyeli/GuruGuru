@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿// Attached to Canvas
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 

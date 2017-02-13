@@ -1,4 +1,5 @@
 ﻿// Initialized in GameManager
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,7 +36,11 @@ public class LevelParser : MonoBehaviour {
 
 			for (int j = 0; j < w; j++) {
 
-				char type = temp [j] [0];
+				char type = 'o';
+				if (temp [j].Length > 0) {
+					type = temp [j] [0];
+				}
+					
 				char orientation = '0';
 
 				if (temp[j].Length > 1) {
@@ -71,13 +76,8 @@ public class LevelParser : MonoBehaviour {
 			}
 		}
 
-		GameObject gobg = Instantiate(backgroundPrefab);
-		Background b = gobg.GetComponent<Background> ();
-		b.Initialize(h, w);
-	}
-
-	// Put Hero to the start position
-	static public void ResetHero() {
-		hero.transform.position = startPosition;
+//		GameObject gobg = Instantiate(backgroundPrefab);
+//		Background b = gobg.GetComponent<Background> ();
+//		b.Initialize(h, w);
 	}
 }

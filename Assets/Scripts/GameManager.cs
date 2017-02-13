@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿// Attached to GameManager
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -42,6 +44,6 @@ public class GameManager : MonoBehaviour {
 	}
 
 	static public void Reload() {
-		LevelParser.ResetHero ();
+		SceneManager.LoadScene ("Scene_0");
 	}
 }

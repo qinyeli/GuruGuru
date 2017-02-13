@@ -80,9 +80,13 @@ public class Tile : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		if (other.name == "Hero") {
+			// If Hero reaches destination
 			if (type == 'd') {
 				GameManager.NextLevel ();
-			} else if (type == 'w') {
+			}
+
+			// If Hero hits the spikes
+			else if (type == 'w') {
 				GameManager.Reload ();
 			}
 		}

@@ -13,10 +13,10 @@ public class Hero : MonoBehaviour {
 	float acceleration = 10f;
 	float deceleration = 10f;
 
-
 	Rigidbody rigid;
 	SphereCollider coll;
 	Ground ground;
+	HeroAnimation heroAnimation;
 
 	public float startJumpHeight;
 	public bool grounded;
@@ -28,6 +28,7 @@ public class Hero : MonoBehaviour {
 		rigid = GetComponent<Rigidbody> ();
 		coll = GetComponent<SphereCollider> ();
 		ground = GameObject.Find ("Ground").GetComponent<Ground> ();
+		heroAnimation = GetComponent<HeroAnimation> ();
 
 		// Set the initail value of startJumpHeight to avoid the ground from rotating at start
 		startJumpHeight = transform.position.y;
@@ -36,6 +37,14 @@ public class Hero : MonoBehaviour {
 
 	void Update() {
 		grounded = isGrounded ();
+
+		if (grounded) {
+			if (startJumpHeight - transform.position.y > 6) {
+				Die ();
+			}
+			startJumpHeight = transform.position.y;
+		}
+
 	}
 
 	void FixedUpdate () {
@@ -135,20 +144,27 @@ public class Hero : MonoBehaviour {
 	void Jump() {
 		Vector3 vel = rigid.velocity;
 		vel.y = jumpSpeed;
-		startJumpHeight = transform.position.y;
 		rigid.velocity = vel;
 	}
 
-	void OnCollisionEnter(Collision coll) {
-		//if (transform.position.y - startJumpHeight > 1 && coll.transform.root.name == "Ground") {
+	void Die() {
+		rigid.isKinematic = true;
+		heroAnimation.SplashBlood ();
+		StartCoroutine ("WaitAndDie", 3f);
+	}
 
+	IEnumerator WaitAndDie(float t) {
+		yield return new WaitForSeconds(t);
+		GameManager.Reload ();
+	}
+		
+	void OnCollisionEnter(Collision coll) {
 		if (!grounded && isDashing && coll.transform.root.name == "Ground") {
 			if (coll.transform.position.x - transform.position.x < 0) {
 				ground.Rotate (90);
 			} else {
 				ground.Rotate (-90);
 			}
-			startJumpHeight = transform.position.y;
 		}
 	}
 }
