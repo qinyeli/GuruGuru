@@ -10,6 +10,7 @@ public class LevelParser : MonoBehaviour {
 	static GameObject tilePrefab;
 	static GameObject heroPrefab;
 	static GameObject backgroundPrefab;
+	static GameObject sawPrefab;
 	//static Sprite graySprite;
 
 	static GameObject hero;
@@ -20,6 +21,7 @@ public class LevelParser : MonoBehaviour {
 		tilePrefab = Resources.Load<GameObject> ("Prefabs/Tile");
 		heroPrefab = Resources.Load<GameObject> ("Prefabs/Hero");
 		backgroundPrefab = Resources.Load<GameObject> ("Prefabs/Background");
+		sawPrefab = Resources.Load<GameObject> ("Prefabs/Saw");
 	}
 
 	static public void Load(int level) {
@@ -61,13 +63,18 @@ public class LevelParser : MonoBehaviour {
 				 * 3: rotate 270 degress
 				 */
 
-				if (type == 's') {
+				if (type == 'h') {
 					hero = Instantiate (heroPrefab);
 					hero.name = "Hero";
-					startPosition = new Vector3 (j, - i, 0);
+					startPosition = new Vector3 (j, -i, 0);
 					hero.transform.position = startPosition;
 
-				} else if (type != 'o') {
+				} else if (type == 's') {
+					GameObject saw = Instantiate (sawPrefab);
+					GameObject ground = GameObject.Find ("Ground");
+					saw.transform.parent = ground.transform;
+
+				}else if (type != 'o') {
 					GameObject go = Instantiate (tilePrefab);
 					Tile t = go.GetComponent<Tile> ();
 					t.Initialize (type, orientation, j, - i);

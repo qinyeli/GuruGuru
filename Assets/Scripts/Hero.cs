@@ -14,6 +14,7 @@ public class Hero : MonoBehaviour {
 	float deceleration = 10f;
 
 	float deathHeight = 6f;
+	float jumpHeight = 2f;
 
 	Rigidbody rigid;
 	SphereCollider collider;
@@ -59,8 +60,12 @@ public class Hero : MonoBehaviour {
 	bool isGrounded() {
 		bool result = (Physics.Raycast (transform.position, Vector3.down, collider.radius * 1.2f));
 		if (result && !grounded) {
-			anim.SplashSparkle ();
-			startJumpHeight = transform.position.y;
+			if (startJumpHeight - transform.position.y > deathHeight) { // Die
+				Die ();
+			} else {
+				anim.SplashSparkle ();
+				startJumpHeight = transform.position.y;
+			}
 		}
 
 		return result;
@@ -83,8 +88,14 @@ public class Hero : MonoBehaviour {
 			StayIdle ();
 		}
 
-		if (Input.GetKey(KeyCode.A) && grounded) {
+		if (grounded && Input.GetKeyDown(KeyCode.A)) {
 			Jump ();
+		}
+
+		if (!grounded && rigid.velocity.y > 0 && !Input.GetKey (KeyCode.A)) {
+			if (transform.position.y - startJumpHeight > jumpHeight) {
+				rigid.velocity = Vector3.zero;
+			}
 		}
 
 		// Set isDashing here
@@ -169,17 +180,23 @@ public class Hero : MonoBehaviour {
 			Tile t = coll.gameObject.GetComponent<Tile> ();
 			if (t.type == 'w') { // Die
 				Die ();
+				return;
 			} else if (isGrounded()) {
 				if (startJumpHeight - transform.position.y > deathHeight) { // Die
 					Die ();
+					return;
 				}
-			} else if (isDashing) { // Rotate
-				anim.SplashRainbow ();
-				startJumpHeight = transform.position.y;
-				if (coll.transform.position.x - transform.position.x < 0) {
-					ground.Rotate (90);
-				} else {
-					ground.Rotate (-90);
+			}
+
+			if (isDashing) { // Rotate
+				if (Mathf.Abs (coll.transform.position.y - transform.position.y) < 0.6) {
+					anim.SplashRainbow ();
+					startJumpHeight = transform.position.y;
+					if (coll.transform.position.x - transform.position.x < 0) {
+						ground.Rotate (90);
+					} else {
+						ground.Rotate (-90);
+					}
 				}
 			}
 		}

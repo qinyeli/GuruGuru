@@ -39,15 +39,11 @@ public class HeroAnimation : MonoBehaviour {
 
 		if (isBlood) {
 			Splash (bloodPrefab, 10);
-		}
-
-		if (isSparkle && !hero.isDead) {
-			Splash (sparklePrefab, 10);
-		}
-
-		if (isRainbow && !hero.isDead) {
+		} else if (isRainbow && !hero.isDead) {
 			Splash (rainbowPrefab, 10);
-		}
+		} else if (isSparkle && !hero.isDead) {
+			Splash (sparklePrefab, 10);
+		} 
 	}
 
 	void Splash(GameObject prefab, int n) {
@@ -78,7 +74,7 @@ public class HeroAnimation : MonoBehaviour {
 	}
 
 	public void SplashSparkle() {
-		Splash (sparklePrefab, 10);
+		Splash (sparklePrefab, 5);
 //		isSparkle = true;
 //		StartCoroutine ("WaitAndStopSparkle", 0.05f);
 	}

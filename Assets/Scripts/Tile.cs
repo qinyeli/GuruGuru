@@ -54,7 +54,7 @@ public class Tile : MonoBehaviour {
 			break;
 		case 'w':
 			bc.center = new Vector3 (0f, -0.4f, 0f);
-			bc.size = new Vector3 (1f, 0.2f, 0f);
+			bc.size = new Vector3 (0.9f, 0.1f, 0f);
 			break;
 		default:
 			break;
