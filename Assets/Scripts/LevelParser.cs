@@ -13,7 +13,7 @@ public class LevelParser : MonoBehaviour {
 	//static Sprite graySprite;
 
 	static GameObject hero;
-	static          Vector3 startPosition;
+	static Vector3 startPosition;
 
 	void Awake() {
 		DontDestroyOnLoad(transform.gameObject);

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Rainbow : MonoBehaviour {
 	public float maxSpeed = 10f;
+	public float minSize = 0.2f;
+	public float maxSize = 0.3f;
+
 	public Vector3 gravity = new Vector3(0, -20f, 0);
 
 	Color[] colors = new Color[] {
@@ -21,6 +24,10 @@ public class Rainbow : MonoBehaviour {
 			colors[Random.Range(0, colors.Length)]);
 
 		rigid = GetComponent<Rigidbody> ();
+
+		// Set the size
+		float size = Random.Range(minSize, maxSize);
+		transform.localScale = new Vector3 (size, size, size);
 
 		// Set the velocity
 		Vector3 velocity = new Vector3 (

@@ -14,12 +14,14 @@ public class HeroAnimation : MonoBehaviour {
 	GameObject bloodPrefab;
 	GameObject rainbowPrefab;
 	GameObject sparklePrefab;
+	Hero hero;
 
 	// Use this for initialization
 	void Start () {
 		bloodPrefab = Resources.Load<GameObject> ("Prefabs/Cubes/Blood");
 		rainbowPrefab = Resources.Load<GameObject> ("Prefabs/Cubes/Rainbow");
 		sparklePrefab = Resources.Load<GameObject> ("Prefabs/Cubes/Sparkle");
+		hero = gameObject.GetComponent<Hero> ();
 	}
 	
 	// Update is called once per frame
@@ -39,11 +41,11 @@ public class HeroAnimation : MonoBehaviour {
 			Splash (bloodPrefab, 10);
 		}
 
-		if (isSparkle) {
+		if (isSparkle && !hero.isDead) {
 			Splash (sparklePrefab, 10);
 		}
 
-		if (isRainbow) {
+		if (isRainbow && !hero.isDead) {
 			Splash (rainbowPrefab, 10);
 		}
 	}

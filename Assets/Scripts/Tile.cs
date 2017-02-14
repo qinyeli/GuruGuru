@@ -55,7 +55,6 @@ public class Tile : MonoBehaviour {
 		case 'w':
 			bc.center = new Vector3 (0f, -0.4f, 0f);
 			bc.size = new Vector3 (1f, 0.2f, 0f);
-			bc.isTrigger = enabled;
 			break;
 		default:
 			break;
@@ -75,21 +74,6 @@ public class Tile : MonoBehaviour {
 			break;
 		default:
 			break;
-		}
-	}
-
-	void OnTriggerEnter(Collider other) {
-		if (other.name == "Hero") {
-			// If Hero reaches destination
-			if (type == 'd') {
-				GameManager.NextLevel ();
-			}
-
-			// If Hero hits the spikes
-			else if (type == 'w') {
-				Hero hero = other.gameObject.GetComponent<Hero>();
-				hero.Die ();
-			}
 		}
 	}
 }

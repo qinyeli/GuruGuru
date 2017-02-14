@@ -16,7 +16,7 @@ public class Hero : MonoBehaviour {
 	float deathHeight = 6f;
 
 	Rigidbody rigid;
-	SphereCollider coll;
+	SphereCollider collider;
 	Ground ground;
 	HeroAnimation anim;
 
@@ -25,41 +25,41 @@ public class Hero : MonoBehaviour {
 	//public bool isRunning;
 	public bool isDashing;
 
+	public bool isDead = false;
+
 	// Use this for initialization
 	void Start () {
 		rigid = GetComponent<Rigidbody> ();
-		coll = GetComponent<SphereCollider> ();
+		collider = GetComponent<SphereCollider> ();
 		ground = GameObject.Find ("Ground").GetComponent<Ground> ();
 		anim = GetComponent<HeroAnimation> ();
 
 		// Set the initail value of startJumpHeight to avoid the ground from rotating at start
 		startJumpHeight = transform.position.y;
-	}
 
+		GetComponent<SpriteRenderer> ().sortingOrder = 1;
+	}
 
 	void Update() {
-		grounded = isGrounded ();
-	}
+		if (isDead) {
+			return;
+		}
 
-	void FixedUpdate () {
 		// Freeze Hero when the ground is rotating
 		if (ground.IsRotating ()) {
 			rigid.isKinematic = true;	
 			return;
 		}
-
+			
+		grounded = isGrounded ();
 		rigid.isKinematic = false;
 		HandleInput ();
 	}
 
 	bool isGrounded() {
-		bool result = (Physics.Raycast (transform.position, Vector3.down, coll.radius * 1.2f));
-		if (result) {
-			if (startJumpHeight - transform.position.y > deathHeight) {
-				Die ();
-			} else if (!grounded && !ground.IsRotating()) {
-				anim.SplashSparkle ();
-			}
+		bool result = (Physics.Raycast (transform.position, Vector3.down, collider.radius * 1.2f));
+		if (result && !grounded) {
+			anim.SplashSparkle ();
 			startJumpHeight = transform.position.y;
 		}
 
@@ -152,24 +152,44 @@ public class Hero : MonoBehaviour {
 	}
 
 	public void Die() {
+		rigid.velocity = Vector3.zero;
 		rigid.isKinematic = true;
+		isDead = true;
 		anim.SplashBlood ();
-		StartCoroutine ("WaitAndDie", 1f);
+		StartCoroutine ("WaitAndReload", 1f);
 	}
 
-	IEnumerator WaitAndDie(float t) {
+	IEnumerator WaitAndReload(float t) {
 		yield return new WaitForSeconds(t);
 		GameManager.Reload ();
 	}
 		
 	void OnCollisionEnter(Collision coll) {
-		if (!grounded && isDashing && coll.transform.root.name == "Ground") {
-			if (coll.transform.position.x - transform.position.x < 0) {
+		if (coll.transform.root.name == "Ground") {
+			Tile t = coll.gameObject.GetComponent<Tile> ();
+			if (t.type == 'w') { // Die
+				Die ();
+			} else if (isGrounded()) {
+				if (startJumpHeight - transform.position.y > deathHeight) { // Die
+					Die ();
+				}
+			} else if (isDashing) { // Rotate
 				anim.SplashRainbow ();
-				ground.Rotate (90);
-			} else {
-				anim.SplashRainbow ();
-				ground.Rotate (-90);
+				startJumpHeight = transform.position.y;
+				if (coll.transform.position.x - transform.position.x < 0) {
+					ground.Rotate (90);
+				} else {
+					ground.Rotate (-90);
+				}
+			}
+		}
+	}
+		
+	void OnTriggerEnter(Collider other) {
+		if (other.transform.root.name == "Ground") {
+			Tile t = other.gameObject.GetComponent<Tile> ();
+			if (t.type == 'd') {
+				GameManager.NextLevel ();
 			}
 		}
 	}
