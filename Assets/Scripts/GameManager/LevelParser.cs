@@ -1,4 +1,4 @@
-﻿// Initialized in GameManager
+﻿// Attached to GameManager
 
 using System.Collections;
 using System.Collections.Generic;

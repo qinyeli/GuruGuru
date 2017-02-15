@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour {
 
 	public static int currLevel = -1;
-	public static int totalLevel = 4;
+	public static int totalLevel = 5;
 //	public static System.Random random = new System.Random ();
 
 	void Awake() {

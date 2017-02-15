@@ -5,7 +5,7 @@ using UnityEngine;
 public class Rainbow : MonoBehaviour {
 	public float maxSpeed = 10f;
 	public float minSize = 0.2f;
-	public float maxSize = 0.3f;
+	public float maxSize = 0.25f;
 
 	public Vector3 gravity = new Vector3(0, -20f, 0);
 

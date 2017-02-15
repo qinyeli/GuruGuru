@@ -7,11 +7,11 @@ using UnityEngine;
 public class Hero : MonoBehaviour {
 
 	float runSpeed = 10f;
-	float dashSpeed = 15f;
+	float dashSpeed = 20f;
 	float jumpSpeed = 20f;
 
-	float acceleration = 10f;
-	float deceleration = 10f;
+	float acceleration = 350f;
+	float deceleration = 200f;
 
 	float deathHeight = 7f;
 	float jumpHeight = 1.5f;
@@ -73,20 +73,25 @@ public class Hero : MonoBehaviour {
 	}
 
 	void HandleInput() {
-		if (Input.GetKey (KeyCode.RightArrow)) {
-			if (Input.GetKey (KeyCode.S)) {
+		if (Input.GetKey (KeyCode.S)) {
+			if (isRight) {
 				DashRight ();
 			} else {
-				RunRight ();
-			}
-		} else if (Input.GetKey (KeyCode.LeftArrow)) {
-			if (Input.GetKey (KeyCode.S)) {
 				DashLeft ();
-			} else {
-				RunLeft ();
 			}
-		} else {
-			StayIdle ();
+		} else if (Input.GetKeyUp (KeyCode.S)) {
+			isDashing = false;
+			//StartCoroutine ("WaitAndStopDashing", 0.1f);
+		}
+
+		if (!isDashing) {
+			if (Input.GetKey (KeyCode.RightArrow)) {
+				RunRight ();
+			} else if (Input.GetKey (KeyCode.LeftArrow)) {
+				RunLeft ();
+			} else {
+				StayIdle ();
+			}
 		}
 
 		if (grounded && Input.GetKeyDown(KeyCode.A)) {
@@ -101,12 +106,12 @@ public class Hero : MonoBehaviour {
 			}
 		}
 
-		// Set isDashing here
-		if (Mathf.Abs (rigid.velocity.x) > runSpeed) {
-			isDashing = true;
-		} else if (grounded) {
-			isDashing = false;
-		}
+//		// Set isDashing here
+//		if (Mathf.Abs (rigid.velocity.x) > runSpeed) {
+//			isDashing = true;
+//		} else if (grounded) {
+//			isDashing = false;
+//		}
 	}
 
 	void StayIdle() {
@@ -114,9 +119,9 @@ public class Hero : MonoBehaviour {
 			Vector3 vel = rigid.velocity;
 
 			if (rigid.velocity.x > 0) {
-				vel.x = Mathf.Max(rigid.velocity.x - deceleration, 0);
+				vel.x = Mathf.Max(rigid.velocity.x - deceleration * Time.deltaTime, 0);
 			} else if (rigid.velocity.x < 0) {
-				vel.x = Mathf.Min(rigid.velocity.x + deceleration, 0);
+				vel.x = Mathf.Min(rigid.velocity.x + deceleration * Time.deltaTime, 0);
 			}
 
 			rigid.velocity = vel;
@@ -129,9 +134,9 @@ public class Hero : MonoBehaviour {
 		Vector3 vel = rigid.velocity;
 
 		if (rigid.velocity.x < runSpeed) { // Increase speed if too slow
-			vel.x = Mathf.Min (rigid.velocity.x + acceleration, runSpeed);
+			vel.x = Mathf.Min (rigid.velocity.x + acceleration * Time.deltaTime, runSpeed);
 		} else { // Decrease speed if too fast
-			vel.x = Mathf.Max (rigid.velocity.x - deceleration, runSpeed);
+			vel.x = Mathf.Max (rigid.velocity.x - deceleration * Time.deltaTime, runSpeed);
 		}
 
 		rigid.velocity = vel;
@@ -143,27 +148,27 @@ public class Hero : MonoBehaviour {
 		Vector3 vel = rigid.velocity;
 
 		if (rigid.velocity.x < runSpeed) {
-			vel.x = Mathf.Max (rigid.velocity.x - acceleration, -runSpeed);
+			vel.x = Mathf.Max (rigid.velocity.x - acceleration * Time.deltaTime, -runSpeed);
 		} else {
-			vel.x = Mathf.Min (rigid.velocity.x + deceleration, -runSpeed);
+			vel.x = Mathf.Min (rigid.velocity.x + deceleration * Time.deltaTime, -runSpeed);
 		}
 
 		rigid.velocity = vel;
 	}
 
 	void DashRight() {
-		isRight = true;
-
+		isDashing = true;
 		Vector3 vel = rigid.velocity;
-		vel.x = Mathf.Min(rigid.velocity.x + acceleration, dashSpeed);
+		//vel.x = Mathf.Min(rigid.velocity.x + acceleration, dashSpeed);
+		vel.x = dashSpeed;
 		rigid.velocity = vel;
 	}
 
 	void DashLeft() {
-		isRight = false;
-
+		isDashing = true;
 		Vector3 vel = rigid.velocity;
-		vel.x = Mathf.Max(rigid.velocity.x - acceleration, -dashSpeed);
+		//vel.x = Mathf.Max(rigid.velocity.x - acceleration, -dashSpeed);
+		vel.x = -dashSpeed;
 		rigid.velocity = vel;
 	}
 
@@ -205,6 +210,7 @@ public class Hero : MonoBehaviour {
 				if (Mathf.Abs (coll.transform.position.y - transform.position.y) < 0.6) {
 					anim.SplashRainbow ();
 					startJumpHeight = transform.position.y;
+					isDashing = false;
 					if (coll.transform.position.x - transform.position.x < 0) {
 						ground.Rotate (90);
 					} else {
