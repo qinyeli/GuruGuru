@@ -14,14 +14,26 @@ public class HeroAnimation : MonoBehaviour {
 	GameObject bloodPrefab;
 	GameObject rainbowPrefab;
 	GameObject sparklePrefab;
+
 	Hero hero;
+	GameObject halo;
+	SpriteRenderer sprend;
+
+	Quaternion faceRight = Quaternion.identity;
+	Quaternion faceLeft = Quaternion.Euler(0, 180, 0);
 
 	// Use this for initialization
 	void Start () {
 		bloodPrefab = Resources.Load<GameObject> ("Prefabs/Cubes/Blood");
 		rainbowPrefab = Resources.Load<GameObject> ("Prefabs/Cubes/Rainbow");
 		sparklePrefab = Resources.Load<GameObject> ("Prefabs/Cubes/Sparkle");
+
 		hero = gameObject.GetComponent<Hero> ();
+
+		Transform haloTrans = transform.Find ("Halo");
+		halo = haloTrans.gameObject;
+
+		sprend = transform.Find("Sprite").GetComponent<SpriteRenderer> ();
 	}
 	
 	// Update is called once per frame
@@ -35,15 +47,26 @@ public class HeroAnimation : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Alpha3)) {
 			SplashSparkle();
 		}
-
-
+			
 		if (isBlood) {
 			Splash (bloodPrefab, 10);
 		} else if (isRainbow && !hero.isDead) {
 			Splash (rainbowPrefab, 10);
 		} else if (isSparkle && !hero.isDead) {
 			Splash (sparklePrefab, 10);
-		} 
+		}
+
+		if (hero.isDashing) {
+			halo.SetActive (true);
+		} else {
+			halo.SetActive (false);
+		}
+
+		if (hero.isRight) {
+			sprend.transform.rotation = faceRight;
+		} else {
+			sprend.transform.rotation = faceLeft;
+		}
 	}
 
 	void Splash(GameObject prefab, int n) {

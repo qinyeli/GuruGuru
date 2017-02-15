@@ -9,7 +9,7 @@ public class LevelParser : MonoBehaviour {
 
 	static GameObject tilePrefab;
 	static GameObject heroPrefab;
-	static GameObject backgroundPrefab;
+	//static GameObject backgroundPrefab;
 	static GameObject sawPrefab;
 	//static Sprite graySprite;
 
@@ -20,7 +20,7 @@ public class LevelParser : MonoBehaviour {
 		DontDestroyOnLoad(transform.gameObject);
 		tilePrefab = Resources.Load<GameObject> ("Prefabs/Tile");
 		heroPrefab = Resources.Load<GameObject> ("Prefabs/Hero");
-		backgroundPrefab = Resources.Load<GameObject> ("Prefabs/Background");
+		//backgroundPrefab = Resources.Load<GameObject> ("Prefabs/Background");
 		sawPrefab = Resources.Load<GameObject> ("Prefabs/Saw");
 	}
 

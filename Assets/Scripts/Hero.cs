@@ -8,25 +8,27 @@ public class Hero : MonoBehaviour {
 
 	float runSpeed = 10f;
 	float dashSpeed = 15f;
-	float jumpSpeed = 18f;
+	float jumpSpeed = 20f;
 
 	float acceleration = 10f;
 	float deceleration = 10f;
 
-	float deathHeight = 6f;
-	float jumpHeight = 2f;
+	float deathHeight = 7f;
+	float jumpHeight = 1.5f;
 
 	Rigidbody rigid;
 	SphereCollider collider;
 	Ground ground;
 	HeroAnimation anim;
+	Audio audio;
 
 	public float startJumpHeight;
 	public bool grounded;
 	//public bool isRunning;
 	public bool isDashing;
-
 	public bool isDead = false;
+	public bool isGoal = false;
+	public bool isRight = true;
 
 	// Use this for initialization
 	void Start () {
@@ -34,15 +36,14 @@ public class Hero : MonoBehaviour {
 		collider = GetComponent<SphereCollider> ();
 		ground = GameObject.Find ("Ground").GetComponent<Ground> ();
 		anim = GetComponent<HeroAnimation> ();
+		audio = GameObject.Find ("GameManager").GetComponent<Audio> ();
 
 		// Set the initail value of startJumpHeight to avoid the ground from rotating at start
 		startJumpHeight = transform.position.y;
-
-		GetComponent<SpriteRenderer> ().sortingOrder = 1;
 	}
 
 	void Update() {
-		if (isDead) {
+		if (isDead || isGoal) {
 			return;
 		}
 
@@ -94,7 +95,9 @@ public class Hero : MonoBehaviour {
 
 		if (!grounded && rigid.velocity.y > 0 && !Input.GetKey (KeyCode.A)) {
 			if (transform.position.y - startJumpHeight > jumpHeight) {
-				rigid.velocity = Vector3.zero;
+				Vector3 vel = rigid.velocity;
+				vel.y = Mathf.Max (vel.y - 60f * Time.deltaTime, 0f);
+				rigid.velocity = vel;
 			}
 		}
 
@@ -121,6 +124,8 @@ public class Hero : MonoBehaviour {
 	}
 
 	void RunRight() {
+		isRight = true;
+
 		Vector3 vel = rigid.velocity;
 
 		if (rigid.velocity.x < runSpeed) { // Increase speed if too slow
@@ -133,6 +138,8 @@ public class Hero : MonoBehaviour {
 	}
 
 	void RunLeft() {
+		isRight = false;
+
 		Vector3 vel = rigid.velocity;
 
 		if (rigid.velocity.x < runSpeed) {
@@ -145,18 +152,23 @@ public class Hero : MonoBehaviour {
 	}
 
 	void DashRight() {
+		isRight = true;
+
 		Vector3 vel = rigid.velocity;
 		vel.x = Mathf.Min(rigid.velocity.x + acceleration, dashSpeed);
 		rigid.velocity = vel;
 	}
 
 	void DashLeft() {
+		isRight = false;
+
 		Vector3 vel = rigid.velocity;
 		vel.x = Mathf.Max(rigid.velocity.x - acceleration, -dashSpeed);
 		rigid.velocity = vel;
 	}
 
 	void Jump() {
+		audio.Play ("jump");
 		Vector3 vel = rigid.velocity;
 		vel.y = jumpSpeed;
 		rigid.velocity = vel;
@@ -167,6 +179,7 @@ public class Hero : MonoBehaviour {
 		rigid.isKinematic = true;
 		isDead = true;
 		anim.SplashBlood ();
+		audio.Play ("death");
 		StartCoroutine ("WaitAndReload", 1f);
 	}
 
@@ -206,8 +219,21 @@ public class Hero : MonoBehaviour {
 		if (other.transform.root.name == "Ground") {
 			Tile t = other.gameObject.GetComponent<Tile> ();
 			if (t.type == 'd') {
-				GameManager.NextLevel ();
+				Goal ();
 			}
 		}
+	}
+
+	public void Goal() {
+		rigid.velocity = Vector3.zero;
+		rigid.isKinematic = true;
+		isGoal = true;
+		audio.Play ("goal");
+		StartCoroutine ("WaitAndNextLevel", 1.5f);
+	}
+
+	IEnumerator WaitAndNextLevel(float t) {
+		yield return new WaitForSeconds(t);
+		GameManager.NextLevel ();
 	}
 }

@@ -12,9 +12,11 @@ public class Ground: MonoBehaviour {
 	float rotatingSpeed = 3f;
 
 	GameObject hero;
+	Audio audio;
 
 	void Start () {
 		hero = GameObject.Find ("Hero");
+		audio = GameObject.Find ("GameManager").GetComponent<Audio> ();
 	}
 
 	void FixedUpdate () {
@@ -52,6 +54,7 @@ public class Ground: MonoBehaviour {
 			return;
 		}
 
+		audio.Play ("rotate");
 		if (degree > 0) {
 			isRotatingLeft = true;
 		} else {
