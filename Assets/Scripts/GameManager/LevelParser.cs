@@ -11,10 +11,8 @@ public class LevelParser : MonoBehaviour {
 	static GameObject heroPrefab;
 	//static GameObject backgroundPrefab;
 	static GameObject sawPrefab;
+	static GameObject livingSawPrefab;
 	//static Sprite graySprite;
-
-	static GameObject hero;
-	static Vector3 startPosition;
 
 	void Awake() {
 		DontDestroyOnLoad(transform.gameObject);
@@ -22,6 +20,7 @@ public class LevelParser : MonoBehaviour {
 		heroPrefab = Resources.Load<GameObject> ("Prefabs/Hero");
 		//backgroundPrefab = Resources.Load<GameObject> ("Prefabs/Background");
 		sawPrefab = Resources.Load<GameObject> ("Prefabs/Saw");
+		livingSawPrefab = Resources.Load<GameObject> ("Prefabs/LivingSaw");
 	}
 
 	static public void Load(int level) {
@@ -63,18 +62,24 @@ public class LevelParser : MonoBehaviour {
 				 * 3: rotate 270 degress
 				 */
 
+				GameObject ground = GameObject.Find ("Ground");
+
 				if (type == 'h') {
-					hero = Instantiate (heroPrefab);
+					GameObject hero = Instantiate (heroPrefab);
 					hero.name = "Hero";
-					startPosition = new Vector3 (j, -i, 0);
-					hero.transform.position = startPosition;
+					hero.transform.position = new Vector3 (j, -i, 0);
 
 				} else if (type == 's') {
 					GameObject saw = Instantiate (sawPrefab);
-					GameObject ground = GameObject.Find ("Ground");
 					saw.transform.parent = ground.transform;
+					saw.transform.position = new Vector3 (j, -i, 0);
 
-				}else if (type != 'o') {
+				} else if (type == 'S') {
+					GameObject livingSaw = Instantiate (livingSawPrefab);
+					livingSaw.transform.parent = ground.transform;
+					livingSaw.transform.position = new Vector3 (j, -i, 0);
+
+				} else if (type != 'o') {
 					GameObject go = Instantiate (tilePrefab);
 					Tile t = go.GetComponent<Tile> ();
 					t.Initialize (type, orientation, j, - i);

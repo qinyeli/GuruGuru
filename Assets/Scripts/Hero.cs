@@ -9,9 +9,10 @@ public class Hero : MonoBehaviour {
 	float runSpeed = 10f;
 	float dashSpeed = 20f;
 	float jumpSpeed = 20f;
+	float deathSpeed = 60f;
 
 	float acceleration = 350f;
-	float deceleration = 200f;
+	float deceleration = 300f;
 
 	float deathHeight = 7f;
 	float jumpHeight = 1.5f;
@@ -47,6 +48,11 @@ public class Hero : MonoBehaviour {
 			return;
 		}
 
+		// Hero is dead becuase of falling out of the map
+		if (rigid.velocity.y < -deathSpeed) {
+			Die ();
+		}
+
 		// Freeze Hero when the ground is rotating
 		if (ground.IsRotating ()) {
 			rigid.isKinematic = true;	
@@ -80,8 +86,7 @@ public class Hero : MonoBehaviour {
 				DashLeft ();
 			}
 		} else if (Input.GetKeyUp (KeyCode.S)) {
-			isDashing = false;
-			//StartCoroutine ("WaitAndStopDashing", 0.1f);
+			StartCoroutine ("WaitAndStopDashing", 0.1f);
 		}
 
 		if (!isDashing) {
@@ -112,6 +117,11 @@ public class Hero : MonoBehaviour {
 //		} else if (grounded) {
 //			isDashing = false;
 //		}
+	}
+
+	IEnumerator WaitAndStopDashing (float t) {
+		yield return new WaitForSeconds (t);
+		isDashing = false;
 	}
 
 	void StayIdle() {
@@ -195,28 +205,35 @@ public class Hero : MonoBehaviour {
 		
 	void OnCollisionEnter(Collision coll) {
 		if (coll.transform.root.name == "Ground") {
-			Tile t = coll.gameObject.GetComponent<Tile> ();
-			if (t.type == 'w') { // Die
-				Die ();
-				return;
-			} else if (isGrounded()) {
-				if (startJumpHeight - transform.position.y > deathHeight) { // Die
+			print (coll.gameObject.tag);
+			if (coll.gameObject.tag == "Tile") {
+
+				Tile t = coll.gameObject.GetComponent<Tile> ();
+				if (t.type == 'w') { // Die
 					Die ();
 					return;
-				}
-			}
-
-			if (isDashing) { // Rotate
-				if (Mathf.Abs (coll.transform.position.y - transform.position.y) < 0.6) {
-					anim.SplashRainbow ();
-					startJumpHeight = transform.position.y;
-					isDashing = false;
-					if (coll.transform.position.x - transform.position.x < 0) {
-						ground.Rotate (90);
-					} else {
-						ground.Rotate (-90);
+				} else if (isGrounded ()) {
+					if (startJumpHeight - transform.position.y > deathHeight) { // Die
+						Die ();
+						return;
 					}
 				}
+
+				if (isDashing || Mathf.Abs (rigid.velocity.x) > runSpeed) { // Rotate
+					if (Mathf.Abs (coll.transform.position.y - transform.position.y) < 0.6) {
+						anim.SplashSparkle ();
+						startJumpHeight = transform.position.y;
+						isDashing = false;
+						if (coll.transform.position.x - transform.position.x < 0) {
+							ground.Rotate (90);
+						} else {
+							ground.Rotate (-90);
+						}
+					}
+				}
+			} else if (coll.transform.tag == "Saw") {
+				Die ();
+				return;
 			}
 		}
 	}
@@ -235,6 +252,7 @@ public class Hero : MonoBehaviour {
 		rigid.isKinematic = true;
 		isGoal = true;
 		audio.Play ("goal");
+		anim.SplashRainbow ();
 		StartCoroutine ("WaitAndNextLevel", 1.5f);
 	}
 

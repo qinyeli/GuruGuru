@@ -34,6 +34,7 @@ public class HeroAnimation : MonoBehaviour {
 		halo = haloTrans.gameObject;
 
 		sprend = transform.Find("Sprite").GetComponent<SpriteRenderer> ();
+		sprend.sortingOrder = 2;
 	}
 	
 	// Update is called once per frame

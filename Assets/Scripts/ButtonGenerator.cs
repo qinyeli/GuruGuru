@@ -24,22 +24,31 @@ public class ButtonGenerator : MonoBehaviour {
 
 	void OnGUI() {
 		int i = 0;
-		while (i < GameManager.totalLevel) {
+		while (true) {
 			float y = screenH * 0.5f + (h + spaceH) * i / 3;
 			if (GUI.Button(new Rect (screenW * 0.5f - spaceW - w * 1.5f, y, w, h), "Level " + i, style)) {
 				GameManager.LoadLevel (i);
 			}
-			i++;
+
+			if (++ i >= GameManager.totalLevel) {
+				break;
+			}
 
 			if (GUI.Button(new Rect (screenW * 0.5f - w * 0.5f, y, w, h), "Level " + i, style)) {
 				GameManager.LoadLevel (i);
 			}
-			i++;
+
+			if (++ i >= GameManager.totalLevel) {
+				break;
+			}
 
 			if (GUI.Button(new Rect (screenW * 0.5f + spaceW + w * 0.5f, y, w, h), "Level " + i, style)) {
 				GameManager.LoadLevel (i);
 			}
-			i++;
+
+			if (++ i >= GameManager.totalLevel) {
+				break;
+			}
 		}
 	}
 }

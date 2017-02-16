@@ -51,10 +51,11 @@ public class Tile : MonoBehaviour {
 			bc.center = Vector3.zero;
 			bc.size = Vector3.one;
 			bc.isTrigger = enabled;
+			sprend.sortingOrder = -1;
 			break;
 		case 'w':
 			bc.center = new Vector3 (0f, -0.4f, 0f);
-			bc.size = new Vector3 (0.9f, 0.1f, 0f);
+			bc.size = new Vector3 (0.8f, 0.1f, 0f);
 			break;
 		default:
 			break;

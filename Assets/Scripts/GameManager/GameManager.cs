@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour {
 
 	public static int currLevel = -1;
-	public static int totalLevel = 5;
+	public static int totalLevel = 11;
 //	public static System.Random random = new System.Random ();
 
 	void Awake() {
@@ -26,6 +26,10 @@ public class GameManager : MonoBehaviour {
 		if (scene.name == "SceneLevelSelection") {
 			print (scene.name + " loaded...");
 		}
+
+		if (scene.name == "SceneOpening") {
+			SceneManager.LoadScene ("SceneLevelSelection");
+		}
 	}
 
 	void Update() {
@@ -40,8 +44,11 @@ public class GameManager : MonoBehaviour {
 	}
 		
 	static public void NextLevel () {
-		currLevel = (currLevel + 1) % totalLevel;
-		SceneManager.LoadScene ("Scene_0");
+		if (++currLevel < totalLevel) {
+			SceneManager.LoadScene ("Scene_0");
+		} else {
+			SceneManager.LoadScene ("SceneLevelSelection");
+		}
 	}
 
 	static public void Reload() {

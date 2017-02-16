@@ -16,6 +16,5 @@ public class CamFollow : MonoBehaviour {
 	
 	void FixedUpdate () {
 		gameObject.transform.position = poi.position + offset;
-		print (transform.position);
 	}
 }
