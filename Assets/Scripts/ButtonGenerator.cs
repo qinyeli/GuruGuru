@@ -15,14 +15,15 @@ public class ButtonGenerator : MonoBehaviour {
 	GUIStyle style;
 
 	void Start() {
-		style = new GUIStyle ("button");
-		style.fontSize = 24;
-
-		screenW = Screen.width;
-		screenH = Screen.height;
 	}
 
 	void OnGUI() {
+		style = new GUIStyle ("button");
+		style.fontSize = 24;
+		screenW = Screen.width;
+		screenH = Screen.height;
+
+
 		int i = 0;
 		while (true) {
 			float y = screenH * 0.5f + (h + spaceH) * i / 3;
