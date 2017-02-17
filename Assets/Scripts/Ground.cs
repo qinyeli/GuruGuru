@@ -20,17 +20,7 @@ public class Ground: MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		HandleInput ();
 		HandleMovement ();
-	}
-
-	void HandleInput() {
-//		if (Input.GetKey (KeyCode.LeftArrow)) {
-//			PrepareRotation (90);
-//
-//		} else if (Input.GetKey (KeyCode.RightArrow)) {
-//			PrepareRotation (-90);
-//		}
 	}
 
 	void HandleMovement() {

@@ -79,13 +79,13 @@ public class Hero : MonoBehaviour {
 	}
 
 	void HandleInput() {
-		if (Input.GetKey (KeyCode.LeftShift)) {
+		if (Input.GetKey (GameManager.dashKey)) {
 			if (isRight) {
 				DashRight ();
 			} else {
 				DashLeft ();
 			}
-		} else if (Input.GetKeyUp (KeyCode.LeftShift)) {
+		} else if (Input.GetKeyUp (GameManager.dashKey)) {
 			StartCoroutine ("WaitAndStopDashing", 0.1f);
 		}
 
@@ -99,11 +99,11 @@ public class Hero : MonoBehaviour {
 			}
 		}
 
-		if (grounded && Input.GetKeyDown(KeyCode.Space)) {
+		if (grounded && Input.GetKeyDown(GameManager.jumpKey)) {
 			Jump ();
 		}
 
-		if (!grounded && rigid.velocity.y > 0 && !Input.GetKey (KeyCode.Space)) {
+		if (!grounded && rigid.velocity.y > 0 && !Input.GetKey (GameManager.jumpKey)) {
 			if (transform.position.y - startJumpHeight > jumpHeight) {
 				Vector3 vel = rigid.velocity;
 				vel.y = Mathf.Max (vel.y - 60f * Time.deltaTime, 0f);

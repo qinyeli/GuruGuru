@@ -31,11 +31,11 @@ public class LivingSaw : MonoBehaviour {
 			rigid.isKinematic = false;
 		}
 
-		if (grounded && Input.GetKeyDown(KeyCode.Space)) {
+		if (grounded && Input.GetKeyDown(GameManager.jumpKey)) {
 			Jump ();
 		}
 
-		if (!grounded && rigid.velocity.y > 0 && !Input.GetKey (KeyCode.A)) {
+		if (!grounded && rigid.velocity.y > 0 && !Input.GetKey (GameManager.jumpKey)) {
 			if (transform.position.y - startJumpHeight > jumpHeight) {
 				Vector3 vel = rigid.velocity;
 				vel.y = Mathf.Max (vel.y - 60f * Time.deltaTime, 0f);

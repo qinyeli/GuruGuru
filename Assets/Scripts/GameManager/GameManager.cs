@@ -9,7 +9,8 @@ public class GameManager : MonoBehaviour {
 
 	public static int currLevel = -1;
 	public static int totalLevel = 11;
-//	public static System.Random random = new System.Random ();
+	public static KeyCode jumpKey = KeyCode.Space;
+	public static KeyCode dashKey = KeyCode.LeftShift;
 
 	void Awake() {
 		DontDestroyOnLoad(transform.gameObject);
