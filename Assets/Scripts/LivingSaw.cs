@@ -31,7 +31,7 @@ public class LivingSaw : MonoBehaviour {
 			rigid.isKinematic = false;
 		}
 
-		if (grounded && Input.GetKeyDown(KeyCode.A)) {
+		if (grounded && Input.GetKeyDown(KeyCode.Space)) {
 			Jump ();
 		}
 

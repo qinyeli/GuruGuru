@@ -36,6 +36,10 @@ public class GameManager : MonoBehaviour {
 		if (Input.GetKey (KeyCode.F1)) {
 			NextLevel ();
 		}
+
+		if (Input.GetKey (KeyCode.Escape)) {
+			SceneManager.LoadScene ("SceneLevelSelection");
+		}
 	}
 
 	static public void LoadLevel(int level) {

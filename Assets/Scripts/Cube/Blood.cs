@@ -11,7 +11,7 @@ public class Blood : MonoBehaviour {
 	Rigidbody rigid;
 
 	void Start () {
-		GetComponent<MeshRenderer>().material.SetColor ("_EmissionColor", new Color (0.5f, 0f, 0f));
+		GetComponent<MeshRenderer>().material.SetColor ("_EmissionColor", new Color (0.5f, 0f, 0f, 1f));
 
 		rigid = GetComponent<Rigidbody> ();
 

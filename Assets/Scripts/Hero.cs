@@ -79,13 +79,13 @@ public class Hero : MonoBehaviour {
 	}
 
 	void HandleInput() {
-		if (Input.GetKey (KeyCode.S)) {
+		if (Input.GetKey (KeyCode.LeftShift)) {
 			if (isRight) {
 				DashRight ();
 			} else {
 				DashLeft ();
 			}
-		} else if (Input.GetKeyUp (KeyCode.S)) {
+		} else if (Input.GetKeyUp (KeyCode.LeftShift)) {
 			StartCoroutine ("WaitAndStopDashing", 0.1f);
 		}
 
@@ -99,24 +99,17 @@ public class Hero : MonoBehaviour {
 			}
 		}
 
-		if (grounded && Input.GetKeyDown(KeyCode.A)) {
+		if (grounded && Input.GetKeyDown(KeyCode.Space)) {
 			Jump ();
 		}
 
-		if (!grounded && rigid.velocity.y > 0 && !Input.GetKey (KeyCode.A)) {
+		if (!grounded && rigid.velocity.y > 0 && !Input.GetKey (KeyCode.Space)) {
 			if (transform.position.y - startJumpHeight > jumpHeight) {
 				Vector3 vel = rigid.velocity;
 				vel.y = Mathf.Max (vel.y - 60f * Time.deltaTime, 0f);
 				rigid.velocity = vel;
 			}
 		}
-
-//		// Set isDashing here
-//		if (Mathf.Abs (rigid.velocity.x) > runSpeed) {
-//			isDashing = true;
-//		} else if (grounded) {
-//			isDashing = false;
-//		}
 	}
 
 	IEnumerator WaitAndStopDashing (float t) {
