@@ -12,8 +12,17 @@ public class GameManager : MonoBehaviour {
 	public static KeyCode jumpKey = KeyCode.Space;
 	public static KeyCode dashKey = KeyCode.LeftShift;
 
+	static GameManager _instance;
+	static bool initialized = false;
+
 	void Awake() {
-		DontDestroyOnLoad(transform.gameObject);
+		if (_instance != null && _instance != this) {
+			Destroy(gameObject);
+			return;
+		} else {
+			_instance = this;
+		}
+		DontDestroyOnLoad(gameObject);
 		SceneManager.sceneLoaded += SceneLoaded;
 	}
 
@@ -26,10 +35,6 @@ public class GameManager : MonoBehaviour {
 
 		if (scene.name == "SceneLevelSelection") {
 			print (scene.name + " loaded...");
-		}
-
-		if (scene.name == "SceneOpening") {
-			SceneManager.LoadScene ("SceneLevelSelection");
 		}
 	}
 
