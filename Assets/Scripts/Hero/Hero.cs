@@ -79,36 +79,79 @@ public class Hero : MonoBehaviour {
 	}
 
 	void HandleInput() {
-		if (Input.GetKey (GameManager.dashKey)) {
-			if (isRight) {
-				DashRight ();
-			} else {
-				DashLeft ();
-			}
-		} else if (Input.GetKeyUp (GameManager.dashKey)) {
-			StartCoroutine ("WaitAndStopDashing", 0.1f);
-		}
+		HandleDash ();
 
 		if (!isDashing) {
-			if (Input.GetKey (KeyCode.RightArrow)) {
-				RunRight ();
-			} else if (Input.GetKey (KeyCode.LeftArrow)) {
-				RunLeft ();
-			} else {
-				StayIdle ();
+			HandleDirection ();
+		}
+
+		HandleJump ();
+	}
+
+	void HandleDirection() {
+		// Run right
+		Vector3 vel = rigid.velocity;
+
+		if (Input.GetKey (KeyCode.RightArrow)) {
+			isRight = true;
+
+			if (rigid.velocity.x < runSpeed) { // Increase speed if too slow
+				vel.x = Mathf.Min (rigid.velocity.x + acceleration * Time.deltaTime, runSpeed);
+			} else { // Decrease speed if too fast
+				vel.x = Mathf.Max (rigid.velocity.x - deceleration * Time.deltaTime, runSpeed);
 			}
-		}
 
-		if (grounded && Input.GetKeyDown(GameManager.jumpKey)) {
-			Jump ();
-		}
+			rigid.velocity = vel;
 
-		if (!grounded && rigid.velocity.y > 0 && !Input.GetKey (GameManager.jumpKey)) {
-			if (transform.position.y - startJumpHeight > jumpHeight) {
-				Vector3 vel = rigid.velocity;
-				vel.y = Mathf.Max (vel.y - 60f * Time.deltaTime, 0f);
+		// Run left
+		} else if (Input.GetKey (KeyCode.LeftArrow)) {
+			isRight = false;
+
+			if (rigid.velocity.x < runSpeed) {
+				vel.x = Mathf.Max (rigid.velocity.x - acceleration * Time.deltaTime, -runSpeed);
+			} else {
+				vel.x = Mathf.Min (rigid.velocity.x + deceleration * Time.deltaTime, -runSpeed);
+			}
+
+			rigid.velocity = vel;
+
+		// Stay idle
+		} else {
+			if (grounded) {
+				if (rigid.velocity.x > 0) {
+					vel.x = Mathf.Max(rigid.velocity.x - deceleration * Time.deltaTime, 0);
+				} else if (rigid.velocity.x < 0) {
+					vel.x = Mathf.Min(rigid.velocity.x + deceleration * Time.deltaTime, 0);
+				}
+
 				rigid.velocity = vel;
 			}
+		}
+	}
+
+	void HandleDash() {
+		if (Input.GetKey (GameManager.dashKey)) {
+			
+			// Dash right
+			if (isRight) {
+				isDashing = true;
+				Vector3 vel = rigid.velocity;
+				//vel.x = Mathf.Min(rigid.velocity.x + acceleration, dashSpeed);
+				vel.x = dashSpeed;
+				rigid.velocity = vel;
+
+			// Dash left
+			} else {
+				isDashing = true;
+				Vector3 vel = rigid.velocity;
+				//vel.x = Mathf.Max(rigid.velocity.x - acceleration, -dashSpeed);
+				vel.x = -dashSpeed;
+				rigid.velocity = vel;
+			}
+		
+		// Stop dashing
+		} else if (Input.GetKeyUp (GameManager.dashKey)) {
+			StartCoroutine ("WaitAndStopDashing", 0.1f);
 		}
 	}
 
@@ -117,69 +160,22 @@ public class Hero : MonoBehaviour {
 		isDashing = false;
 	}
 
-	void StayIdle() {
-		if (grounded) {
+	void HandleJump() {
+		if (grounded && Input.GetKeyDown(GameManager.jumpKey)) {
+			audio.Play ("jump");
 			Vector3 vel = rigid.velocity;
-
-			if (rigid.velocity.x > 0) {
-				vel.x = Mathf.Max(rigid.velocity.x - deceleration * Time.deltaTime, 0);
-			} else if (rigid.velocity.x < 0) {
-				vel.x = Mathf.Min(rigid.velocity.x + deceleration * Time.deltaTime, 0);
-			}
-
+			vel.y = jumpSpeed;
 			rigid.velocity = vel;
 		}
-	}
 
-	void RunRight() {
-		isRight = true;
-
-		Vector3 vel = rigid.velocity;
-
-		if (rigid.velocity.x < runSpeed) { // Increase speed if too slow
-			vel.x = Mathf.Min (rigid.velocity.x + acceleration * Time.deltaTime, runSpeed);
-		} else { // Decrease speed if too fast
-			vel.x = Mathf.Max (rigid.velocity.x - deceleration * Time.deltaTime, runSpeed);
+		// Start falling down if jump key released
+		if (!grounded && rigid.velocity.y > 0 && !Input.GetKey (GameManager.jumpKey)) {
+			if (transform.position.y - startJumpHeight > jumpHeight) {
+				Vector3 vel = rigid.velocity;
+				vel.y = Mathf.Max (vel.y - 60f * Time.deltaTime, 0f);
+				rigid.velocity = vel;
+			}
 		}
-
-		rigid.velocity = vel;
-	}
-
-	void RunLeft() {
-		isRight = false;
-
-		Vector3 vel = rigid.velocity;
-
-		if (rigid.velocity.x < runSpeed) {
-			vel.x = Mathf.Max (rigid.velocity.x - acceleration * Time.deltaTime, -runSpeed);
-		} else {
-			vel.x = Mathf.Min (rigid.velocity.x + deceleration * Time.deltaTime, -runSpeed);
-		}
-
-		rigid.velocity = vel;
-	}
-
-	void DashRight() {
-		isDashing = true;
-		Vector3 vel = rigid.velocity;
-		//vel.x = Mathf.Min(rigid.velocity.x + acceleration, dashSpeed);
-		vel.x = dashSpeed;
-		rigid.velocity = vel;
-	}
-
-	void DashLeft() {
-		isDashing = true;
-		Vector3 vel = rigid.velocity;
-		//vel.x = Mathf.Max(rigid.velocity.x - acceleration, -dashSpeed);
-		vel.x = -dashSpeed;
-		rigid.velocity = vel;
-	}
-
-	void Jump() {
-		audio.Play ("jump");
-		Vector3 vel = rigid.velocity;
-		vel.y = jumpSpeed;
-		rigid.velocity = vel;
 	}
 
 	public void Die() {
@@ -198,7 +194,6 @@ public class Hero : MonoBehaviour {
 		
 	void OnCollisionEnter(Collision coll) {
 		if (coll.transform.root.name == "Ground") {
-			print (coll.gameObject.tag);
 			if (coll.gameObject.tag == "Tile") {
 
 				Tile t = coll.gameObject.GetComponent<Tile> ();
