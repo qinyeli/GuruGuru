@@ -3,6 +3,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using InControl;
 
 public class Hero : MonoBehaviour {
 
@@ -31,6 +32,8 @@ public class Hero : MonoBehaviour {
 	public bool isGoal = false;
 	public bool isRight = true;
 
+	InputDevice inputDevice = null;
+
 	// Use this for initialization
 	void Start () {
 		rigid = GetComponent<Rigidbody> ();
@@ -44,6 +47,8 @@ public class Hero : MonoBehaviour {
 	}
 
 	void Update() {
+		inputDevice = InputManager.ActiveDevice;
+
 		if (isDead || isGoal) {
 			return;
 		}
@@ -92,7 +97,8 @@ public class Hero : MonoBehaviour {
 		// Run right
 		Vector3 vel = rigid.velocity;
 
-		if (Input.GetKey (KeyCode.RightArrow)) {
+		// if (Input.GetKey (KeyCode.RightArrow)) {
+		if (inputDevice.Direction.Right) {
 			isRight = true;
 
 			if (rigid.velocity.x < runSpeed) { // Increase speed if too slow
@@ -104,7 +110,8 @@ public class Hero : MonoBehaviour {
 			rigid.velocity = vel;
 
 		// Run left
-		} else if (Input.GetKey (KeyCode.LeftArrow)) {
+		//} else if (Input.GetKey (KeyCode.LeftArrow)) {
+		} else if (inputDevice.Direction.Left) {
 			isRight = false;
 
 			if (rigid.velocity.x < runSpeed) {
@@ -130,8 +137,8 @@ public class Hero : MonoBehaviour {
 	}
 
 	void HandleDash() {
-		if (Input.GetKey (GameManager.dashKey)) {
-			
+		//if (Input.GetKey (GameManager.dashKey)) {
+		if (inputDevice.Action3.IsPressed) {	
 			// Dash right
 			if (isRight) {
 				isDashing = true;
@@ -150,7 +157,8 @@ public class Hero : MonoBehaviour {
 			}
 		
 		// Stop dashing
-		} else if (Input.GetKeyUp (GameManager.dashKey)) {
+		//} else if (Input.GetKeyUp (GameManager.dashKey)) {
+		} else if (inputDevice.Action3.WasReleased) {
 			StartCoroutine ("WaitAndStopDashing", 0.1f);
 		}
 	}
@@ -161,7 +169,8 @@ public class Hero : MonoBehaviour {
 	}
 
 	void HandleJump() {
-		if (grounded && Input.GetKeyDown(GameManager.jumpKey)) {
+		//if (grounded && Input.GetKeyDown(GameManager.jumpKey)) {
+		if (grounded && inputDevice.Action1.WasPressed) {
 			audio.Play ("jump");
 			Vector3 vel = rigid.velocity;
 			vel.y = jumpSpeed;
@@ -169,7 +178,8 @@ public class Hero : MonoBehaviour {
 		}
 
 		// Start falling down if jump key released
-		if (!grounded && rigid.velocity.y > 0 && !Input.GetKey (GameManager.jumpKey)) {
+		//if (!grounded && rigid.velocity.y > 0 && !Input.GetKey (GameManager.jumpKey)) {
+		if (!grounded && rigid.velocity.y > 0 && !inputDevice.Action1.IsPressed) {
 			if (transform.position.y - startJumpHeight > jumpHeight) {
 				Vector3 vel = rigid.velocity;
 				vel.y = Mathf.Max (vel.y - 60f * Time.deltaTime, 0f);

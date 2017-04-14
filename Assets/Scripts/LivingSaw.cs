@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using InControl;
 
 public class LivingSaw : MonoBehaviour {
 
@@ -14,15 +15,17 @@ public class LivingSaw : MonoBehaviour {
 	public float startJumpHeight;
 	public bool grounded;
 
-	// Use this for initialization
+	InputDevice inputDevice = null;
+
 	void Start () {
 		ground = GameObject.Find ("Ground").GetComponent<Ground> ();
 		rigid = gameObject.GetComponent<Rigidbody> ();
 		collider = GetComponent<SphereCollider> ();
 	}
 
-	// Update is called once per frame
 	void Update () {
+		inputDevice = InputManager.ActiveDevice;
+
 		grounded = isGrounded ();
 
 		if (ground.IsRotating ()) {
@@ -31,23 +34,26 @@ public class LivingSaw : MonoBehaviour {
 			rigid.isKinematic = false;
 		}
 
-		if (grounded && Input.GetKeyDown(GameManager.jumpKey)) {
-			Jump ();
+		HandleJump ();
+	}
+
+	void HandleJump() {
+		//if (grounded && Input.GetKeyDown(GameManager.jumpKey)) {
+		if (grounded && inputDevice.Action1.WasPressed) {
+			Vector3 vel = rigid.velocity;
+			vel.y = jumpSpeed;
+			rigid.velocity = vel;
 		}
 
-		if (!grounded && rigid.velocity.y > 0 && !Input.GetKey (GameManager.jumpKey)) {
+		// Start falling down if jump key released
+		//if (!grounded && rigid.velocity.y > 0 && !Input.GetKey (GameManager.jumpKey)) {
+		if (!grounded && rigid.velocity.y > 0 && !inputDevice.Action1.IsPressed) {
 			if (transform.position.y - startJumpHeight > jumpHeight) {
 				Vector3 vel = rigid.velocity;
 				vel.y = Mathf.Max (vel.y - 60f * Time.deltaTime, 0f);
 				rigid.velocity = vel;
 			}
 		}
-	}
-
-	void Jump() {
-		Vector3 vel = rigid.velocity;
-		vel.y = jumpSpeed;
-		rigid.velocity = vel;
 	}
 
 	bool isGrounded() {
