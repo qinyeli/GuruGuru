@@ -46,6 +46,12 @@ public class KeyboardAndMouseProfile : UnityInputDeviceProfile
 				Handle = "Dash with Right Shift",
 				Target = InputControlType.Action3,
 				Source = KeyCodeButton( KeyCode.RightShift )
+			},
+			new InputControlMapping
+			{
+				Handle = "Back to Menu",
+				Target = InputControlType.Action4,
+				Source = KeyCodeButton( KeyCode.Escape )
 			}
 		};
 
