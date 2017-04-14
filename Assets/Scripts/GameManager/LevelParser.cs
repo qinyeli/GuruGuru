@@ -15,7 +15,6 @@ public class LevelParser : MonoBehaviour {
 	//static Sprite graySprite;
 
 	void Awake() {
-		DontDestroyOnLoad(transform.gameObject);
 		tilePrefab = Resources.Load<GameObject> ("Prefabs/Tile");
 		heroPrefab = Resources.Load<GameObject> ("Prefabs/Hero");
 		//backgroundPrefab = Resources.Load<GameObject> ("Prefabs/Background");

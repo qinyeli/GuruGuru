@@ -10,7 +10,7 @@ public class LivingSaw : MonoBehaviour {
 
 	Ground ground;
 	Rigidbody rigid;
-	SphereCollider collider;
+	SphereCollider myCollider;
 
 	public float startJumpHeight;
 	public bool grounded;
@@ -20,7 +20,7 @@ public class LivingSaw : MonoBehaviour {
 	void Start () {
 		ground = GameObject.Find ("Ground").GetComponent<Ground> ();
 		rigid = gameObject.GetComponent<Rigidbody> ();
-		collider = GetComponent<SphereCollider> ();
+		myCollider = GetComponent<SphereCollider> ();
 	}
 
 	void Update () {
@@ -57,7 +57,7 @@ public class LivingSaw : MonoBehaviour {
 	}
 
 	bool isGrounded() {
-		bool result = (Physics.Raycast (transform.position, Vector3.down, collider.radius * 1.2f));
+		bool result = (Physics.Raycast (transform.position, Vector3.down, myCollider.radius * 1.2f));
 		if (result && !grounded) {
 			//anim.SplashSparkle ();
 			startJumpHeight = transform.position.y;

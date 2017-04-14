@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Audio : MonoBehaviour {
+public class AudioManager : MonoBehaviour {
 	Dictionary<string, AudioClip> soundEffects;
 	Dictionary<string, AudioClip> bgms;
 	AudioSource bgmSource;

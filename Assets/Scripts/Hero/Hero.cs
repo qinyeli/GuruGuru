@@ -19,10 +19,10 @@ public class Hero : MonoBehaviour {
 	float jumpHeight = 1.5f;
 
 	Rigidbody rigid;
-	SphereCollider collider;
+	SphereCollider myCollider;
 	Ground ground;
 	HeroAnimation anim;
-	Audio audio;
+	AudioManager audioManager;
 
 	public float startJumpHeight;
 	public bool grounded;
@@ -37,10 +37,10 @@ public class Hero : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rigid = GetComponent<Rigidbody> ();
-		collider = GetComponent<SphereCollider> ();
+		myCollider = GetComponent<SphereCollider> ();
 		ground = GameObject.Find ("Ground").GetComponent<Ground> ();
 		anim = GetComponent<HeroAnimation> ();
-		audio = GameObject.Find ("GameManager").GetComponent<Audio> ();
+		audioManager = GameObject.Find ("GameManager").GetComponent<AudioManager> ();
 
 		// Set the initail value of startJumpHeight to avoid the ground from rotating at start
 		startJumpHeight = transform.position.y;
@@ -70,7 +70,7 @@ public class Hero : MonoBehaviour {
 	}
 
 	bool isGrounded() {
-		bool result = (Physics.Raycast (transform.position, Vector3.down, collider.radius * 1.2f));
+		bool result = (Physics.Raycast (transform.position, Vector3.down, myCollider.radius * 1.2f));
 		if (result && !grounded) {
 			if (startJumpHeight - transform.position.y > deathHeight) { // Die
 				Die ();
@@ -171,7 +171,7 @@ public class Hero : MonoBehaviour {
 	void HandleJump() {
 		//if (grounded && Input.GetKeyDown(GameManager.jumpKey)) {
 		if (grounded && inputDevice.Action1.WasPressed) {
-			audio.Play ("jump");
+			audioManager.Play ("jump");
 			Vector3 vel = rigid.velocity;
 			vel.y = jumpSpeed;
 			rigid.velocity = vel;
@@ -193,7 +193,7 @@ public class Hero : MonoBehaviour {
 		rigid.isKinematic = true;
 		isDead = true;
 		anim.SplashBlood ();
-		audio.Play ("death");
+		audioManager.Play ("death");
 		StartCoroutine ("WaitAndReload", 1f);
 	}
 
@@ -249,7 +249,7 @@ public class Hero : MonoBehaviour {
 		rigid.velocity = Vector3.zero;
 		rigid.isKinematic = true;
 		isGoal = true;
-		audio.Play ("goal");
+		audioManager.Play ("goal");
 		anim.SplashRainbow ();
 		StartCoroutine ("WaitAndNextLevel", 1.5f);
 	}
