@@ -31,7 +31,6 @@ public class GameManager : MonoBehaviour {
 	void SceneLoaded(Scene scene, LoadSceneMode loadSceneMode) {
 		
 		// Print the name of the scene on load
-
 		if (scene.name == "SceneGamePlay") {
 			print (scene.name + " " + "Level " + currLevel + " loaded...");
 			LevelParser.Load (currLevel);
@@ -64,8 +63,13 @@ public class GameManager : MonoBehaviour {
 		currLevel = level;
 		SceneManager.LoadScene ("SceneGamePlay");
 	}
-		
+
 	static public void NextLevel () {
+		_instance.StartCoroutine ("WaitAndNextLevel", 1.5f);
+	}
+
+	IEnumerator WaitAndNextLevel(float t) {
+		yield return new WaitForSeconds (t);
 		if (++currLevel < totalLevel) {
 			SceneManager.LoadScene ("SceneGamePlay");
 		} else {
@@ -74,6 +78,6 @@ public class GameManager : MonoBehaviour {
 	}
 
 	static public void Reload() {
-		SceneManager.LoadScene ("SceneGamePlay");
+		SceneManager.LoadScene (SceneManager.GetActiveScene().name);
 	}
 }
