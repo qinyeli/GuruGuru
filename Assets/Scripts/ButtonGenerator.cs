@@ -22,7 +22,7 @@ public class ButtonGenerator : MonoBehaviour {
 		screenH = Screen.height;
 
 
-		int i = 0;
+		int i = 1;
 		while (true) {
 			float y = screenH * 0.5f + (h + spaceH) * i / 3;
 			if (GUI.Button(new Rect (screenW * 0.5f - spaceW - w * 1.5f, y, w, h), "Level " + i, style)) {
@@ -51,8 +51,8 @@ public class ButtonGenerator : MonoBehaviour {
 		}
 
 		if (GUI.Button(new Rect(screenW * 0.5f - w * 0.5f, screenH * 0.5f + (h + spaceH) * (Mathf.Floor(i / 3) + 1),
-			w, h), "How to play?", style )) {
-			SceneManager.LoadScene ("SceneInstruction");
+			w, h), "Tutorial", style )) {
+			GameManager.LoadLevel (0);
 		}
 	}
 }

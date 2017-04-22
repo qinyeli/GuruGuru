@@ -251,11 +251,6 @@ public class Hero : MonoBehaviour {
 		isGoal = true;
 		audioManager.Play ("goal");
 		anim.SplashRainbow ();
-		StartCoroutine ("WaitAndNextLevel", 1.5f);
-	}
-
-	IEnumerator WaitAndNextLevel(float t) {
-		yield return new WaitForSeconds(t);
 		GameManager.NextLevel ();
 	}
 }
