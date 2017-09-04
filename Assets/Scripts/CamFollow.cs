@@ -7,14 +7,10 @@ using UnityEngine;
 public class CamFollow : MonoBehaviour {
 
 	Transform poi;
-	//public Vector3 offset = new Vector3(0,1,-10);
-	Vector3 offset = new Vector3(0,1,-12);
-
-	void Start () {
-		poi = GameObject.Find ("Hero").transform;
-	}
+	public Vector3 offset = new Vector3(0,1,-12);
 	
 	void FixedUpdate () {
+		poi = GameObject.Find ("Hero").transform;
 		gameObject.transform.position = poi.position + offset;
 	}
 }

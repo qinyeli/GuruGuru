@@ -1,9 +1,9 @@
 ﻿// Attached to Hero
 
+using InControl;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using InControl;
 
 public class Hero : MonoBehaviour {
 
@@ -199,7 +199,7 @@ public class Hero : MonoBehaviour {
 
 	IEnumerator WaitAndReload(float t) {
 		yield return new WaitForSeconds(t);
-		GameManager.Reload ();
+		GameManager.ReloadLevel ();
 	}
 		
 	void OnCollisionEnter(Collision coll) {
@@ -251,6 +251,6 @@ public class Hero : MonoBehaviour {
 		isGoal = true;
 		audioManager.Play ("goal");
 		anim.SplashRainbow ();
-		GameManager.NextLevel ();
+		GameManager.LevelClear ();
 	}
 }

@@ -1,4 +1,4 @@
-﻿// Attached to ButtonGenerator
+﻿// Attached to Canvas in SceneLevelSelection
 
 using System.Collections;
 using System.Collections.Generic;

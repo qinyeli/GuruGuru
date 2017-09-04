@@ -10,8 +10,8 @@ public class GameManager : MonoBehaviour {
 
 	public static int currLevel = -1;
 	public static int totalLevel = 10;
-	public static KeyCode jumpKey = KeyCode.Space;
-	public static KeyCode dashKey = KeyCode.LeftShift;
+//	public static KeyCode jumpKey = KeyCode.Space;
+//	public static KeyCode dashKey = KeyCode.LeftShift;
 
 	static GameManager _instance;
 
@@ -34,38 +34,50 @@ public class GameManager : MonoBehaviour {
 		if (scene.name == "SceneGamePlay") {
 			print (scene.name + " " + "Level " + currLevel + " loaded...");
 			LevelParser.Load (currLevel);
-		} 
+		}
 
 		if (scene.name == "SceneLevelSelection") {
 			print (scene.name + " loaded...");
 		}
 	}
-
-	void Start() {
-		if (SceneManager.GetActiveScene ().name == "SceneInitial") {
-			SceneManager.LoadScene ("SceneLevelSelection");
-		}
-	}
-
+		
 	void Update() {
 		inputDevice = InputManager.ActiveDevice;
 
-		if (Input.GetKey (KeyCode.F1)) {
-			NextLevel ();
+		switch (SceneManager.GetActiveScene ().name) {
+		case "SceneInitial":
+			SceneManager.LoadScene ("SceneOpening");
+			break;
+		case "SceneOpening":
+			if (inputDevice.AnyButton || Input.GetKey (KeyCode.Return)) {
+				SceneManager.LoadScene ("SceneLevelSelection");
+			}
+			break;
+		default:
+			break;
 		}
 
 		if (inputDevice.Action4.IsPressed) {
-			SceneManager.LoadScene ("SceneLevelSelection");
+			SceneManager.LoadScene ("SceneOpening");
 		}
 	}
 
 	static public void LoadLevel(int level) {
 		currLevel = level;
-		SceneManager.LoadScene ("SceneGamePlay");
+
+		if (currLevel == 0) {
+			SceneManager.LoadScene ("SceneTutorial");
+		} else {
+			SceneManager.LoadScene ("SceneGamePlay");
+		}
 	}
 
-	static public void NextLevel () {
+	static public void LevelClear () {
+		if (currLevel == 0) {
+			currLevel = totalLevel;
+		}
 		_instance.StartCoroutine ("WaitAndNextLevel", 1.5f);
+
 	}
 
 	IEnumerator WaitAndNextLevel(float t) {
@@ -77,7 +89,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	static public void Reload() {
+	static public void ReloadLevel() {
 		SceneManager.LoadScene (SceneManager.GetActiveScene().name);
 	}
 }

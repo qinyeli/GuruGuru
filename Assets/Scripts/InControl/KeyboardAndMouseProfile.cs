@@ -1,8 +1,7 @@
-﻿using System;
+﻿using InControl;
+using System;
 using System.Collections;
 using UnityEngine;
-using InControl;
-
 
 // This custom profile is enabled by adding it to the Custom Profiles list
 // on the InControlManager component, or you can attach it yourself like so:
@@ -66,6 +65,16 @@ public class KeyboardAndMouseProfile : UnityInputDeviceProfile
 				Handle = "Move X with AD",
 				Target = InputControlType.LeftStickX,
 				Source = KeyCodeAxis( KeyCode.A, KeyCode.D )
+			},
+			new InputControlMapping {
+				Handle = "Move Y with arrow keys",
+				Target = InputControlType.LeftStickY,
+				Source = KeyCodeAxis( KeyCode.DownArrow, KeyCode.UpArrow )
+			},
+			new InputControlMapping {
+				Handle = "Move Y with WS",
+				Target = InputControlType.LeftStickY,
+				Source = KeyCodeAxis( KeyCode.S, KeyCode.W )
 			}
 		};
 	}

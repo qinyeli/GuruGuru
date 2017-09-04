@@ -17,12 +17,13 @@ public class AudioManager : MonoBehaviour {
 			{ "death", Resources.Load<AudioClip> ("Audios/death") },
 			{ "goal", Resources.Load<AudioClip> ("Audios/goal") },
 			{ "pause", Resources.Load<AudioClip> ("Audios/pause") },
-			{ "jump", Resources.Load<AudioClip> ("Audios/jump") } // done!
-			//{ "rotate", Resources.Load<AudioClip> ("Audios/rotate") },
+			{ "jump", Resources.Load<AudioClip> ("Audios/jump") },
+			{ "rotate", Resources.Load<AudioClip> ("Audios/rotate") }
 		};
 
 		bgms = new Dictionary<string, AudioClip> {
-			{"theme", Resources.Load<AudioClip>("BGMs/Intro Theme")}
+			{"theme", Resources.Load<AudioClip>("BGMs/Intro Theme")},
+			{"theme2", Resources.Load<AudioClip>("BGMs/chubby-cat")}
 		};
 
 		bgmSource = GetComponent<AudioSource> ();
@@ -33,7 +34,7 @@ public class AudioManager : MonoBehaviour {
 
 	public void Play(string soundEffectName) {
 		if (!soundEffects.ContainsKey (soundEffectName)) {
-			print ("Error in Audio.cs: sound effect not found!");
+			print ("Error in Audio.cs: sound effect " + soundEffectName + " not found!");
 			return;
 		}
 
@@ -41,10 +42,5 @@ public class AudioManager : MonoBehaviour {
 		newbie.clip = soundEffects [soundEffectName];
 		newbie.Play ();
 		Destroy (newbie, newbie.clip.length);
-	}
-
-	// Update is called once per frame
-	void Update () {
-		
 	}
 }

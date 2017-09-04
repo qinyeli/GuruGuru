@@ -1,9 +1,9 @@
 ﻿// Attached to Hero
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class HeroAnimation : MonoBehaviour {
 
