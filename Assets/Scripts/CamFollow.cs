@@ -6,11 +6,16 @@ using UnityEngine;
 
 public class CamFollow : MonoBehaviour {
 
-	Transform poi;
-	public Vector3 offset = new Vector3(0,1,-12);
-	
+	GameObject hero;
+	public Vector3 offset = new Vector3 (0, 1, -12);
+
+	void Start() {
+		hero = GameObject.Find ("Hero");
+	}
+
 	void FixedUpdate () {
-		poi = GameObject.Find ("Hero").transform;
-		gameObject.transform.position = poi.position + offset;
+		if (hero != null) {
+			gameObject.transform.position = hero.transform.position + offset;
+		}
 	}
 }
