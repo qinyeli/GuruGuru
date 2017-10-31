@@ -40,9 +40,16 @@ public class GameManager : MonoBehaviour {
 			print (scene.name + " loaded...");
 		}
 	}
-		
+
 	void Update() {
 		inputDevice = InputManager.ActiveDevice;
+
+		for (int i = 0; i < 10; ++i) {
+			if (Input.GetKeyDown ("" + i)) {
+				LoadLevel (i);
+			}
+		}
+
 
 		switch (SceneManager.GetActiveScene ().name) {
 		case "SceneInitial":
