@@ -37,3 +37,6 @@ sysinfo.txt
 
 # Keep everything in docs/
 !/docs/*
+
+# Exclude plugins
+Assets/Plugins/
